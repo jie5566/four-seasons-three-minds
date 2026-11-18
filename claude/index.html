@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e6e1d5">
+<title>Jvision · Four Seasons</title>
+<meta name="description" content="An interactive botanical study of four seasons, light and time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@200;300;400;500&family=Noto+Sans+SC:wght@200&display=swap">
+<style>
+:root{
+  --ink:#262b22;
+  --soft:rgba(38,43,34,.66);
+  --hair:rgba(38,43,34,.22);
+  --serif:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+  --han:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  --sans:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+  --edge:clamp(22px,4.2vw,64px);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#dedacd;color:var(--ink);font-family:var(--sans);font-weight:400;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,a,input{-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:1.5px solid var(--ink);outline-offset:6px;border-radius:2px}
+#scene{position:fixed;inset:0;touch-action:none}
+#scene canvas{display:block;width:100%;height:100%}
+
+/* Type sits on the wall like print: it takes the light and shadow that falls across it. */
+.ui{position:fixed;inset:0;pointer-events:none;mix-blend-mode:multiply}
+.ui>*{pointer-events:auto}
+
+header{position:absolute;top:calc(var(--edge)*.72);left:var(--edge);right:var(--edge);display:flex;justify-content:space-between;align-items:flex-start}
+.brand{color:inherit;text-decoration:none;font-size:15px;font-weight:500;letter-spacing:.42em}
+.brand small{display:block;margin-top:9px;font-family:var(--serif);font-weight:400;font-size:14px;letter-spacing:.01em;color:var(--soft)}
+#about{font-size:12px;letter-spacing:.08em;padding:6px 0;border-bottom:1px solid var(--hair);transition:border-color .3s}
+#about:hover{border-color:var(--ink)}
+
+main{position:absolute;left:calc(var(--edge)*1.7);top:50%;transform:translateY(-58%);pointer-events:none;max-width:min(42vw,520px)}
+.study{font-size:13px;letter-spacing:.04em;color:var(--soft)}
+.title{display:flex;align-items:flex-end;gap:clamp(18px,2.2vw,34px);margin-top:clamp(10px,2vh,22px)}
+h1{font-family:var(--han);font-weight:200;font-size:clamp(104px,11.5vw,196px);line-height:.98;margin:0 0 0 -.06em}
+.title div{padding-bottom:clamp(14px,1.9vw,30px)}
+#english{font-weight:200;font-size:clamp(32px,3.3vw,54px);line-height:1;margin:0 0 14px;letter-spacing:-.015em}
+#subtitle{display:block;font-size:13px;line-height:1.55;color:var(--soft);max-width:22ch}
+.poem{margin-top:clamp(22px,4.4vh,46px);padding-left:20px;border-left:1px solid var(--hair)}
+#poem{font-weight:300;font-size:clamp(15px,1.15vw,18px);line-height:1.7;margin:0}
+.swap{transition:opacity .55s ease,filter .55s ease,transform .55s ease}
+.swapping .swap{opacity:0;filter:blur(7px);transform:translateY(8px)}
+
+.annotation{position:absolute;right:var(--edge);top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:18px;writing-mode:vertical-rl;font-size:11px;letter-spacing:.14em;color:var(--soft);pointer-events:none}
+.annotation i{display:block;width:1px;height:64px;background:var(--hair)}
+#botanical{font-family:var(--serif);font-size:15px;letter-spacing:.02em;color:var(--ink)}
+
+footer{position:absolute;left:var(--edge);right:var(--edge);bottom:calc(var(--edge)*.72);display:flex;justify-content:space-between;align-items:flex-end;gap:28px}
+.caption{font-family:var(--serif);font-size:19px;line-height:1.2}
+.caption span{display:block;margin-top:8px;font-family:var(--sans);font-size:12px;line-height:1.6;color:var(--soft);max-width:30ch}
+
+nav{display:flex;gap:clamp(14px,2.4vw,40px)}
+nav button{position:relative;display:flex;align-items:baseline;gap:10px;padding:14px 2px 2px;min-width:clamp(64px,6.4vw,96px);text-align:left;opacity:.5;transition:opacity .4s}
+nav button::before,nav button::after{content:"";position:absolute;left:0;top:0;height:1px;width:100%;background:var(--hair)}
+nav button::after{background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.2,.7,.1,1)}
+nav button:hover,nav button.active{opacity:1}
+nav button.active::after{transform:scaleX(1)}
+nav b{font-family:var(--han);font-weight:300;font-size:22px;line-height:1}
+nav span{font-size:13px;letter-spacing:.03em}
+
+.controls{justify-self:end;display:flex;align-items:center;gap:20px;font-size:12px;color:var(--soft)}
+.light{display:flex;align-items:center;gap:12px}
+.light label{display:flex;gap:8px;white-space:nowrap}
+#lightname{color:var(--ink);min-width:6.4em}
+.sun{width:9px;height:9px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 4px rgba(38,43,34,.12)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:clamp(96px,10vw,150px);height:22px;background:none;margin:0;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--ink);opacity:.45}
+input[type=range]::-moz-range-track{height:1px;background:var(--ink);opacity:.45}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;margin-top:-6px;border-radius:50%;background:#e9e5d8;border:1px solid var(--ink)}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#e9e5d8;border:1px solid var(--ink)}
+.controls>button{white-space:nowrap;padding:6px 0}
+#wind{padding-left:20px;border-left:1px solid var(--hair)}
+#wind span{color:var(--ink);margin-left:6px}
+#pause{width:34px;height:34px;border:1px solid var(--hair);border-radius:50%;display:grid;place-items:center;transition:border-color .3s}
+#pause:hover{border-color:var(--ink)}
+#pause svg{width:10px;height:10px;fill:var(--ink)}
+
+#info{position:fixed;right:var(--edge);top:calc(var(--edge)*.72 + 56px);width:min(360px,calc(100vw - 2*var(--edge)));padding:34px 34px 30px;background:rgba(240,237,228,.78);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2);box-shadow:0 30px 80px rgba(30,34,24,.22),0 0 0 1px rgba(255,255,255,.35) inset;border-radius:3px;z-index:5}
+#info h2{font-weight:300;font-size:27px;line-height:1.15;letter-spacing:-.01em;margin:0 0 18px}
+#info p{font-size:13px;line-height:1.75;color:var(--soft);margin:0 0 12px}
+#close{position:absolute;right:14px;top:10px;width:30px;height:30px;font-size:20px;line-height:1}
+
+#loading{position:fixed;inset:0;z-index:9;display:grid;place-items:center;background:#dedacd;font-family:var(--serif);font-size:19px;color:var(--soft);transition:opacity 1.6s ease;pointer-events:none}
+#loading.done{opacity:0}
+
+@media (max-width:980px){
+  footer{flex-direction:column;align-items:stretch;gap:18px}
+  nav{justify-content:space-between}
+  nav button{min-width:0;flex:1}
+  .controls{justify-self:stretch;justify-content:space-between;order:-1}
+}
+@media (max-width:700px){
+  main{top:15%;transform:none;left:var(--edge);max-width:78vw}
+  h1{font-size:92px}
+  .title{gap:14px}
+  #english{font-size:30px;margin-bottom:8px}
+  #subtitle{font-size:12px;max-width:17ch}
+  .poem{margin-top:18px;padding-left:14px}
+  #poem{font-size:16px}
+  .annotation{top:34%;font-size:10px}
+  #botanical{font-size:13px}
+  nav span{font-size:11px}
+  .controls{gap:12px}
+  .light label span:first-child{display:none}
+  #wind{padding-left:12px}
+  input[type=range]{width:84px}
+}
+@media (prefers-reduced-motion:reduce){.swap,#loading,nav button::after{transition:none}}
+</style>
+</head>
+<body>
+<div id="scene"></div>
+
+<div class="ui" id="ui">
+  <header>
+    <a class="brand" href="./">JVISION</a>
+    <button id="about" aria-expanded="false" aria-controls="info">About</button>
+  </header>
+
+  <main>
+    <div class="study swap">A study of light and time, no. 001</div>
+    <div class="title swap">
+      <h1 id="char">春</h1>
+      <div><p id="english">Spring</p><span id="subtitle">Everything blooms in its own time.</span></div>
+    </div>
+    <div class="poem swap"><p id="poem">At four in the morning,<br>the begonia is still awake.</p></div>
+  </main>
+
+
+  <footer>
+    <nav aria-label="Choose a season">
+      <button data-season="0" class="active" aria-pressed="true"><span>Spring</span></button>
+      <button data-season="1" aria-pressed="false"><span>Summer</span></button>
+      <button data-season="2" aria-pressed="false"><span>Autumn</span></button>
+      <button data-season="3" aria-pressed="false"><span>Winter</span></button>
+    </nav>
+    <div class="controls">
+      <div class="light">
+        <i class="sun" aria-hidden="true"></i>
+        <label for="light"><span>Light</span><span id="lightname">Afternoon</span></label>
+        <input id="light" aria-label="Time of day" type="range" min="0" max="100" value="65">
+      </div>
+      <button id="wind" aria-pressed="true">Breeze<span>On</span></button>
+      <button id="pause" aria-label="Pause animation"><svg viewBox="0 0 10 10" aria-hidden="true"><path id="pauseicon" d="M1 0h3v10H1zM6 0h3v10H6z"/></svg></button>
+    </div>
+  </footer>
+</div>
+
+<div id="info" hidden>
+  <button id="close" aria-label="Close">×</button>
+  <h2>Time, held in<br>a single branch.</h2>
+  <p>Each season grows a new botanical form. Spring opens, summer flourishes, autumn thins, and winter twists. Select the same season to grow another branch. Move your pointer to stir the breeze and release petals or leaves.</p>
+  <p>Adjust the light and watch the shadows travel across the wall. A digital botanical study inspired by nature.</p>
+</div>
+
+<div id="loading">A new season is taking shape…</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

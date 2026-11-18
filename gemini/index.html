@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jvision · Four Seasons — Gemini, April 2026</title>
+<!-- Static port of the original React + Tailwind component (Jvision V17, Gemini, April 2026).
+     Scene logic is unchanged; Tailwind classes were translated to the CSS below. -->
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif}
+button{font:inherit;background:none;border:0;padding:0;cursor:pointer}
+#root{position:relative;width:100%;height:100vh;overflow:hidden;touch-action:none}
+#sky{position:absolute;inset:0;transition:background 1s}
+.glow{position:absolute;top:-5%;left:-5%;width:60%;height:60%;border-radius:9999px;background:rgba(255,255,255,.2);filter:blur(120px);pointer-events:none}
+nav{position:absolute;top:24px;left:0;right:0;z-index:30;display:flex;justify-content:center;gap:16px;padding:0 16px}
+nav button{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.4);transition:all .5s;padding-bottom:4px;border-bottom:1px solid transparent}
+nav button:hover{color:#fff}
+nav button.active{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+#scene{position:absolute;inset:0;z-index:0}
+#scene canvas{display:block;filter:saturate(1.2) brightness(1.05) contrast(1.02)}
+#hud{position:absolute;inset:0;z-index:10;padding:32px;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;opacity:0;transition:opacity 2s}
+#hud.loaded{opacity:1}
+.top{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;width:100%;gap:32px}
+header{display:flex;flex-direction:column;align-items:flex-start}
+.titlerow{display:flex;flex-direction:column;gap:8px}
+h1{margin:0;font-size:60px;font-weight:300;color:#fff;line-height:1;filter:drop-shadow(0 10px 8px rgba(0,0,0,.04)) drop-shadow(0 4px 3px rgba(0,0,0,.1))}
+#date{font-size:12px;font-weight:300;letter-spacing:.3em;color:rgba(255,255,255,.5);text-transform:uppercase;white-space:nowrap}
+.rule{width:48px;height:.5px;background:rgba(255,255,255,.4);margin:16px 0}
+#poem{margin:0;font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.7);text-transform:uppercase;line-height:2;max-width:200px;white-space:pre-line}
+.brand{display:flex;flex-direction:column;align-items:flex-end;align-self:flex-end}
+.brand span{font-size:18px;font-weight:200;letter-spacing:.3em;color:rgba(255,255,255,.8);text-transform:uppercase}
+.brand i{width:24px;height:.5px;background:rgba(255,255,255,.3);margin-top:8px}
+footer{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;gap:16px}
+.quote{text-align:left;font-size:10px;color:rgba(255,255,255,.5);font-family:ui-serif,Georgia,Cambria,"Times New Roman",Times,serif;font-style:italic;max-width:250px;line-height:1.625;letter-spacing:.05em}
+.sys{display:flex;flex-direction:column;align-items:flex-end;gap:16px}
+#system{font-size:8px;letter-spacing:.8em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.vline{display:none;width:1px;height:112px;background:rgba(255,255,255,.1)}
+@media (min-width:768px){
+  nav{gap:48px}
+  nav button{font-size:10px;letter-spacing:.6em}
+  #hud{padding:64px}
+  .top{flex-direction:row}
+  .titlerow{flex-direction:row;align-items:baseline;gap:24px}
+  h1{font-size:96px}
+  #date{font-size:14px;letter-spacing:.5em}
+  .rule{width:64px;margin:24px 0}
+  #poem{font-size:11px;letter-spacing:.4em;max-width:320px}
+  .brand{align-self:flex-start}
+  .brand span{font-size:20px;letter-spacing:.4em}
+  .brand i{width:32px}
+  footer{flex-direction:row}
+  .quote{font-size:12px;max-width:384px;align-self:auto}
+  .sys{gap:24px}
+  #system{font-size:9px;letter-spacing:1.2em;transform:rotate(90deg) translateY(-20px);transform-origin:right}
+  .vline{display:block}
+}
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="sky"></div>
+  <div class="glow"></div>
+  <nav>
+    <button data-season="0">Spring</button>
+    <button data-season="1">Summer</button>
+    <button data-season="2">Autumn</button>
+    <button data-season="3">Winter</button>
+  </nav>
+  <div id="scene"></div>
+  <div id="hud">
+    <div class="top">
+      <header>
+        <div class="titlerow"><h1 id="char">春</h1><span id="date"></span></div>
+        <div class="rule"></div>
+        <p id="poem"></p>
+      </header>
+      <div class="brand"><span>Jvision</span><i></i></div>
+    </div>
+    <footer>
+      <div class="quote">Beauty is a silent process, <br>unfolding from the first root.</div>
+      <div class="sys"><div id="system">SPRING SYSTEM</div><div class="vline"></div></div>
+    </footer>
+  </div>
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
